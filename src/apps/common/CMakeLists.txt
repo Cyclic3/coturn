@@ -1,7 +1,5 @@
 # Author: Kang Lin (kl222@126.com)
 
-project(turncommon)
-
 set(SOURCE_FILES
     apputils.c
     ns_turn_utils.c
@@ -39,29 +37,29 @@ else()
 endif()
 message("COMMON_LIBS:${COMMON_LIBS}")
 
-add_library(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
+add_library(turncommon ${SOURCE_FILES} ${HEADER_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${COMMON_LIBS})
-target_compile_definitions(${PROJECT_NAME} PUBLIC ${COMMON_DEFINED})
-target_compile_options(${PROJECT_NAME} PUBLIC -Wno-deprecated-declarations)
+target_link_libraries(turncommon PUBLIC ${COMMON_LIBS})
+target_compile_definitions(turncommon PUBLIC ${COMMON_DEFINED})
+target_compile_options(turncommon PUBLIC -Wno-deprecated-declarations)
 
 # See: http://www.it1352.com/478094.html
-target_include_directories(${PROJECT_NAME} PUBLIC
+target_include_directories(turncommon PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src/server>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src/client>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src/apps/common>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/server>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/client>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/apps/common>
     ${COMMON_INCLUDE_DIR}
     )
 
 # Install head files
-set_target_properties(${PROJECT_NAME} PROPERTIES
+set_target_properties(turncommon PROPERTIES
     VERSION ${VERSION}
     )
 
-INSTALL(TARGETS ${PROJECT_NAME}
-    EXPORT ${PROJECT_NAME}Config
+INSTALL(TARGETS turncommon
+    EXPORT turncommonConfig
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
         COMPONENT Runtime
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
@@ -73,20 +71,20 @@ INSTALL(TARGETS ${PROJECT_NAME}
         ${CMAKE_INSTALL_INCLUDEDIR}/turn/client
     )
 
-export(TARGETS ${PROJECT_NAME}
-    APPEND FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+export(TARGETS turncommon
+    APPEND FILE ${CMAKE_BINARY_DIR}/turncommonConfig.cmake
     )
 
 # Install cmake configure files
-install(EXPORT ${PROJECT_NAME}Config
+install(EXPORT turncommonConfig
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake"
     )
 # Install cmake version configure file
 if(DEFINED VERSION)
     write_basic_package_version_file(
-        "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+        "${CMAKE_BINARY_DIR}/turncommonConfigVersion.cmake"
         VERSION ${VERSION}
         COMPATIBILITY AnyNewerVersion)
-    install(FILES "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    install(FILES "${CMAKE_BINARY_DIR}/turncommonConfigVersion.cmake"
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake")
 endif()

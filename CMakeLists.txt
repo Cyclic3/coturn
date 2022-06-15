@@ -4,12 +4,12 @@ cmake_minimum_required(VERSION 3.5)
 
 project(coturn)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 # TODO: Modify this when the version is released
 SET(BUILD_VERSION "4.5.2")
 
 # Find Git Version Patch
-IF(EXISTS "${CMAKE_SOURCE_DIR}/.git")
+IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
     if(NOT GIT)
         SET(GIT $ENV{GIT})
     endif()
@@ -18,13 +18,13 @@ IF(EXISTS "${CMAKE_SOURCE_DIR}/.git")
     endif()
     IF(GIT)
         EXECUTE_PROCESS(
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
             COMMAND ${GIT} describe --tags
             OUTPUT_VARIABLE GIT_VERSION  OUTPUT_STRIP_TRAILING_WHITESPACE
         )
         if(NOT GIT_VERSION)
             EXECUTE_PROCESS(
-                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 COMMAND ${GIT} rev-parse --short HEAD
                 OUTPUT_VARIABLE GIT_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE
             )
@@ -76,7 +76,7 @@ add_custom_target(uninstall-runtime
 )
 # Create will be delete files
 CONFIGURE_FILE(
-    "${CMAKE_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
     "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
     IMMEDIATE @ONLY)
 # Create unistall target

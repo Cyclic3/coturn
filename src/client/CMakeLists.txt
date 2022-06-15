@@ -1,37 +1,35 @@
 # Author: Kang Lin (kl222@126.com)
 
-project(turnclient)
-
 find_package(OpenSSL REQUIRED)
 
 set(HEADER_FILES
-    ${CMAKE_SOURCE_DIR}/src/ns_turn_defs.h
-    ${CMAKE_SOURCE_DIR}/src/client++/TurnMsgLib.h
+    ${PROJECT_SOURCE_DIR}/src/ns_turn_defs.h
+    ${PROJECT_SOURCE_DIR}/src/client++/TurnMsgLib.h
     ns_turn_ioaddr.h
     ns_turn_msg.h
     ns_turn_msg_defs.h
     ns_turn_msg_defs_experimental.h
     ns_turn_msg_addr.h
-    )
+)
 
 set(SOURCE_FILES
     ns_turn_ioaddr.c
     ns_turn_msg_addr.c
     ns_turn_msg.c
-    )
+)
 
-add_library(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
-
-target_link_libraries(${PROJECT_NAME} PUBLIC turncommon OpenSSL::SSL OpenSSL::Crypto)
+add_library(turnclient ${SOURCE_FILES} ${HEADER_FILES})
+target_include_directories(turnclient PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_link_libraries(turnclient PUBLIC turncommon OpenSSL::SSL OpenSSL::Crypto)
 
 # Install head files
-set_target_properties(${PROJECT_NAME} PROPERTIES
+set_target_properties(turnclient PROPERTIES
     PUBLIC_HEADER "${HEADER_FILES}"
     VERSION ${VERSION}
     )
 
-INSTALL(TARGETS ${PROJECT_NAME}
-    EXPORT ${PROJECT_NAME}Config
+INSTALL(TARGETS turnclient
+    EXPORT turnclientConfig
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
         COMPONENT Runtime
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
@@ -44,20 +42,22 @@ INSTALL(TARGETS ${PROJECT_NAME}
         ${CMAKE_INSTALL_INCLUDEDIR}/turn/client
     )
 
-export(TARGETS ${PROJECT_NAME}
-    APPEND FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+export(TARGETS turnclient
+    APPEND FILE ${CMAKE_BINARY_DIR}/turnclientConfig.cmake
     )
 
 # Install cmake configure files
-install(EXPORT ${PROJECT_NAME}Config
+install(EXPORT turnclientConfig
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake"
     )
 # Install cmake version configure file
 if(DEFINED VERSION)
     write_basic_package_version_file(
-        "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+        "${CMAKE_BINARY_DIR}/turnclientConfigVersion.cmake"
         VERSION ${VERSION}
         COMPATIBILITY AnyNewerVersion)
-    install(FILES "${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    install(FILES "${CMAKE_BINARY_DIR}/turnclientConfigVersion.cmake"
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake")
 endif()
+
+add_library("${PROJECT_NAME}::turnclient" ALIAS turnclient)

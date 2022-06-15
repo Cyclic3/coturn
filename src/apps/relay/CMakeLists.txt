@@ -1,7 +1,5 @@
 # Author: Kang Lin (kl222@126.com)
 
-project(turnserver)
-
 set(HEAD_FILES
     tls_listener.h
     mainrelay.h
@@ -89,21 +87,21 @@ else()
     list(APPEND turnserver_DEFINED TURN_NO_PROMETHEUS)
 endif()
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEAD_FILES})
-target_link_libraries(${PROJECT_NAME} PRIVATE turn_server ${turnserver_LIBS})
-target_include_directories(${PROJECT_NAME} PRIVATE ${turnserver_include_dirs})
-target_compile_definitions(${PROJECT_NAME} PRIVATE ${turnserver_DEFINED})
+add_executable(turnserver ${SOURCE_FILES} ${HEAD_FILES})
+target_link_libraries(turnserver PRIVATE turn_server ${turnserver_LIBS})
+target_include_directories(turnserver PRIVATE ${turnserver_include_dirs})
+target_compile_definitions(turnserver PRIVATE ${turnserver_DEFINED})
 
 add_custom_target(turnadmin ALL
     COMMAND 
-        ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:${PROJECT_NAME}> turnadmin
-    DEPENDS ${PROJECT_NAME})
+        ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:turnserver> turnadmin
+    DEPENDS turnserver)
 
-INSTALL(TARGETS ${PROJECT_NAME}
+INSTALL(TARGETS turnserver
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
         COMPONENT Runtime
     )
 
-INSTALL(FILES $<TARGET_FILE_DIR:${PROJECT_NAME}>/turnadmin
+INSTALL(FILES $<TARGET_FILE_DIR:turnserver>/turnadmin
     DESTINATION "${CMAKE_INSTALL_BINDIR}"
             COMPONENT Runtime)
